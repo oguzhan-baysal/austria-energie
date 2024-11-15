@@ -2,23 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion'
-import { Menu, X, ChevronRight, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon, Phone, Mail, User, Users, BookOpen } from 'lucide-react'
+import { Menu, X, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon, Phone, Mail, User, Users, BookOpen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-const NavItem = ({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) => (
-  <motion.li
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    <button
-      onClick={onClick}
-      className="text-gray-600 hover:text-red-600 transition-colors"
-    >
-      {children}
-    </button>
-  </motion.li>
-)
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
