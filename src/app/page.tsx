@@ -5,6 +5,37 @@ import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-mo
 import { Menu, X, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon, Phone, Mail, User, Users, BookOpen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Player } from '@lottiefiles/react-lottie-player'
+import smartHomeAnimation from '../../public/animations/smart-home.json'
+import energieBeratungAnimation from '../../public/animations/energie_beratung.json'
+import begleitenAnimation from '../../public/animations/begleiten_service.json'
+
+const AnimatedText = ({ text }: { text: string }) => {
+  return (
+    <div className="flex justify-center">
+      {text.split("").map((char, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{
+            opacity: [0, 1, 1, 1, 1, 1, 0],
+            y: [50, 0, 0, 0, 0, 0, -50],
+          }}
+          transition={{
+            duration: 3,
+            delay: index * 0.1,
+            repeat: Infinity,
+            repeatDelay: 2,
+            times: [0, 0.2, 0.3, 0.4, 0.5, 0.8, 1]
+          }}
+          className="text-2xl md:text-3xl font-semibold text-white/90"
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </div>
+  )
+}
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -23,11 +54,31 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const blob = document.getElementById('blob')
+      const beratungBlob = document.getElementById('beratung-blob')
+      const begleitenBlob = document.getElementById('begleiten-blob')
+      
       window.onpointermove = event => {
         const { clientX, clientY } = event
 
+        // Hero section blob
         if (blob) {
           blob.animate({
+            left: `${clientX}px`,
+            top: `${clientY}px`
+          }, { duration: 3000, fill: "forwards" })
+        }
+
+        // Beratung section blob
+        if (beratungBlob) {
+          beratungBlob.animate({
+            left: `${clientX}px`,
+            top: `${clientY}px`
+          }, { duration: 3000, fill: "forwards" })
+        }
+
+        // Begleiten section blob
+        if (begleitenBlob) {
+          begleitenBlob.animate({
             left: `${clientX}px`,
             top: `${clientY}px`
           }, { duration: 3000, fill: "forwards" })
@@ -44,7 +95,7 @@ export default function Home() {
       />
 
       <header className="sticky top-0 z-40 backdrop-blur-md bg-white/70">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           <motion.div
             className="flex items-center"
             initial={{ opacity: 0, x: -50 }}
@@ -52,32 +103,41 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <Link href="#home">
-              <Image
-                src="/Logo-AU-Energie__msi___png.webp"
-                alt="Austria Energie Logo"
-                width={80}
-                height={80}
-                className="object-contain hover:scale-105 transition-transform"
-              />
+              <motion.div
+                whileHover={{ 
+                  scale: 2.5,
+                  y: 40,
+                  zIndex: 50
+                }}
+                transition={{ duration: 0.3 }}
+                className="relative"
+                style={{ 
+                  transformOrigin: 'top left',
+                  position: 'absolute'
+                }}
+              >
+                <Image
+                  src="/Logo-AU-Energie__msi___png.webp"
+                  alt="Austria Energie Logo"
+                  width={200}
+                  height={200}
+                  quality={100}
+                  priority
+                  className="object-contain w-[60px] h-[60px]"
+                />
+              </motion.div>
+              {/* Placeholder div to maintain layout */}
+              <div className="w-[60px] h-[60px]" />
             </Link>
           </motion.div>
 
           <div className="flex items-center gap-6">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hidden md:flex bg-red-600 text-white px-6 py-2 rounded-full font-semibold items-center"
-            >
-              <User className="w-4 h-4 mr-2" />
-              Login
-            </motion.button>
-
-            <motion.button
               className="text-gray-600 hover:text-red-600 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               whileTap={{ scale: 0.9 }}
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </motion.button>
           </div>
         </div>
@@ -141,8 +201,28 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="md:w-1/2 mb-10 md:mb-0"
               >
-                <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
-                  <span className="text-red-600">AUSTRIA</span> ENERGIE
+                <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 relative">
+                  <span className="relative inline-block">
+                    <span className="text-red-600">AUSTRIA</span>
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+                      animate={{
+                        x: ['-100%', '100%'],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        repeatDelay: 8,
+                        ease: "easeInOut"
+                      }}
+                      style={{ 
+                        transform: 'skewX(-20deg)',
+                        opacity: 0.3,
+                        filter: 'blur(4px)'
+                      }}
+                    />
+                  </span>{' '}
+                  ENERGIE
                 </h1>
                 <p className="text-xl text-gray-700 mb-8">
                   Ihre Energieberatung mit Erfahrung. Ihre optimierte Zukunft.
@@ -155,7 +235,7 @@ export default function Home() {
                   whileTap={{ scale: 0.95 }}
                   className="bg-red-600 text-white px-8 py-3 rounded-full font-semibold flex items-center group"
                   onClick={() => {
-                    document.getElementById('mehr')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('energieberatung')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
                   MEHR ERFAHREN
@@ -168,155 +248,37 @@ export default function Home() {
                 animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 style={{ y: parallaxY }}
-                className="md:w-1/2"
+                className="md:w-1/2 h-full flex items-center justify-center px-8"
               >
-                <div className="relative w-full h-[400px] bg-gradient-to-br from-red-400 to-red-600 rounded-2xl overflow-hidden shadow-2xl">
-                  <motion.div
-                    animate={{
-                      y: [-15, 15],
-                      transition: {
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        ease: "easeInOut"
-                      }
-                    }}
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <Image
-                      src="/3__msi___png.webp"
-                      alt="Energy Image"
-                      width={200}
-                      height={200}
-                      className="object-contain drop-shadow-xl"
-                    />
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        <section id="mehr" className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2"
-              >
-                <h2 className="text-4xl font-bold mb-4 text-gray-800">Energieberatung in Österreich</h2>
-                <h3 className="text-2xl font-bold text-red-600 mb-6">AUSTRIA Energie</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Energie ist ein wertvolles Gut, das bei gedankenloser Nutzung auch teuer werden kann.
-                  Wir sind Ihre Ansprechpartner, wenn Sie den Energieverbrauch optimieren wollen,
-                  energetische Sanierungen anstehen oder Sie selbst Strom produzieren möchten.
-                </p>
-                <p className="text-gray-600 leading-relaxed mt-4">
-                  Unser erfahrenes Team berät Sie zu aktuellen Förderungen in Österreich und erstellt
-                  für Sie klare Analysen zu Potenzialen der Einsparung, gezielter Sanierung und mehr.
-                  Rufen Sie uns an und vereinbaren Sie Ihren Termin, wenn Sie weniger Energie fürs
-                  Wohnen oder Arbeiten einsetzen möchten.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2"
-              >
-                <Image
-                  src="/undraw_smart_home_re_orvn1.svg"
-                  alt="Smart Home Illustration"
-                  width={500}
-                  height={500}
-                  className="object-contain w-full"
-                />
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2"
-              >
-                <h2 className="text-4xl font-bold mb-4 text-gray-800">Wir begleiten Sie durch alle Bereiche</h2>
-                <h3 className="text-2xl font-bold text-red-600 mb-6">
-                  Informieren | sanieren | kassieren
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-8">
-                  Austria Energie fungiert als Beratungsstelle und bietet umfassende
-                  Unterstützung für Haushalte in Österreich, indem ihre Mitarbeiter
-                  individuelle Beratungsdienstleistungen für Fördermöglichkeiten im
-                  Bereich Energieeffizienz und erneuerbare Energien bereitstellen.
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-red-600 text-white px-8 py-3 rounded-full font-semibold flex items-center group"
-                  onClick={() => {
-                    document.getElementById('themenbereiche')?.scrollIntoView({ behavior: 'smooth' });
+                <motion.div 
+                  className="w-[80%] max-w-[500px]"
+                  animate={{ 
+                    y: [0, -10, 0] // Yukarı-aşağı hafif hareket
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
                   }}
                 >
-                  THEMENBEREICHE
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="md:w-1/2 flex justify-center"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Image
-                    src="/undraw_join_re_w1lh.svg"
-                    alt="Team Illustration"
-                    width={400}
-                    height={400}
-                    className="object-contain"
+                  <Player
+                    src={smartHomeAnimation}
+                    loop
+                    autoplay
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      filter: 'hue-rotate(345deg) saturate(130%) brightness(1.0) contrast(100%)'
+                    }}
+                    className="object-contain drop-shadow-xl" // Gölge ekledik
+                    rendererSettings={{
+                      preserveAspectRatio: 'xMidYMid meet',
+                      progressiveLoad: true
+                    }}
                   />
                 </motion.div>
               </motion.div>
             </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-red-600">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="text-center max-w-4xl mx-auto"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Austria Energie
-              </h2>
-              <h3 className="text-2xl md:text-3xl font-semibold text-white/90 mb-6">
-                Wir helfen Österreich
-              </h3>
-              <p className="text-lg md:text-xl text-white/80 leading-relaxed">
-                Ihr verlässlicher Partner auf dem Weg zu einer energieeffizienten und
-                nachhaltigen Zukunft in Österreich! Wir setzen uns leidenschaftlich
-                für eine umweltfreundliche Energieberatung ein, die nicht nur Ihre
-                Kosten senkt, sondern auch die Umwelt schützt.
-              </p>
-
-              <div className="absolute left-0 right-0 bottom-0 h-20 bg-white/5 transform -skew-y-3" />
-            </motion.div>
           </div>
         </section>
 
@@ -449,41 +411,257 @@ export default function Home() {
           </motion.div>
         </section>
 
+        <section id="energieberatung" className="py-20 bg-gradient-to-br from-red-50 to-white relative overflow-hidden">
+          <div
+            id="beratung-blob"
+            className="absolute w-[500px] h-[500px] bg-red-400 opacity-30 blur-[100px] rounded-full pointer-events-none"
+            style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+          />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2"
+              >
+                <motion.div 
+                  className="bg-gradient-to-br from-white/30 to-red-50/20 backdrop-blur-sm rounded-2xl p-8 shadow-2xl"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h2 className="text-4xl font-bold mb-4 text-gray-800">Energieberatung in Österreich</h2>
+                  <h3 className="text-2xl font-bold text-red-600 mb-6">AUSTRIA Energie</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Energie ist ein wertvolles Gut, das bei gedankenloser Nutzung auch teuer werden kann.
+                    Wir sind Ihre Ansprechpartner, wenn Sie den Energieverbrauch optimieren wollen,
+                    energetische Sanierungen anstehen oder Sie selbst Strom produzieren möchten.
+                  </p>
+                  <p className="text-gray-600 leading-relaxed mt-4">
+                    Unser erfahrenes Team berät Sie zu aktuellen Förderungen in Österreich und erstellt
+                    für Sie klare Analysen zu Potenzialen der Einsparung, gezielter Sanierung und mehr.
+                    Rufen Sie uns an und vereinbaren Sie Ihren Termin, wenn Sie weniger Energie fürs
+                    Wohnen oder Arbeiten einsetzen möchten.
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 h-full flex items-center justify-center px-8"
+              >
+                <motion.div 
+                  className="w-[80%] max-w-[500px]"
+                  animate={{ 
+                    y: [0, -10, 0] // Yukarı-aşağı hafif hareket
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Player
+                    src={energieBeratungAnimation}
+                    loop
+                    autoplay
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      filter: 'hue-rotate(345deg) saturate(130%) brightness(1.0) contrast(100%)'
+                    }}
+                    className="object-contain drop-shadow-xl" // Gölge ekledik
+                    rendererSettings={{
+                      preserveAspectRatio: 'xMidYMid meet',
+                      progressiveLoad: true
+                    }}
+                  />
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 bg-gradient-to-br from-red-50 to-white relative overflow-hidden">
+          <div
+            id="begleiten-blob"
+            className="absolute w-[500px] h-[500px] bg-red-400 opacity-30 blur-[100px] rounded-full pointer-events-none"
+            style={{ 
+              left: '50%', 
+              top: '50%', 
+              transform: 'translate(-50%, -50%)',
+              zIndex: 0
+            }}
+          />
+          
+          <div className="container mx-auto px-4 relative" style={{ zIndex: 1 }}>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2"
+                style={{ zIndex: 2 }}
+              >
+                <motion.div 
+                  className="bg-gradient-to-br from-white/30 to-red-50/20 backdrop-blur-sm rounded-2xl p-8 shadow-2xl"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h2 className="text-4xl font-bold mb-4 text-gray-800">Wir begleiten Sie durch alle Bereiche</h2>
+                  <h3 className="text-2xl font-bold text-red-600 mb-6">
+                    Informieren | sanieren | kassieren
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-8">
+                    Austria Energie fungiert als Beratungsstelle und bietet umfassende
+                    Unterstützung für Haushalte in Österreich, indem ihre Mitarbeiter
+                    individuelle Beratungsdienstleistungen für Fördermöglichkeiten im
+                    Bereich Energieeffizienz und erneuerbare Energien bereitstellen.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-red-600 text-white px-8 py-3 rounded-full font-semibold flex items-center group"
+                    onClick={() => {
+                      document.getElementById('themenbereiche')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    THEMENBEREICHE
+                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="md:w-1/2 h-full flex items-center justify-center px-8"
+              >
+                <motion.div 
+                  className="w-[80%] max-w-[500px]"
+                  animate={{ 
+                    y: [0, -10, 0] // Yukarı-aşağı hafif hareket
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Player
+                    src={begleitenAnimation}
+                    loop
+                    autoplay
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      filter: 'hue-rotate(345deg) saturate(130%) brightness(1.0) contrast(100%)'
+                    }}
+                    className="object-contain drop-shadow-xl" // Gölge ekledik
+                    rendererSettings={{
+                      preserveAspectRatio: 'xMidYMid meet',
+                      progressiveLoad: true
+                    }}
+                  />
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 bg-red-600 relative overflow-hidden">
+          {/* Arka plan efekti için */}
+          <div className="absolute inset-0 bg-gradient-to-r from-red-700/30 to-transparent" />
+          
+          <div className="container mx-auto px-4 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="text-center max-w-4xl mx-auto"
+            >
+              <motion.h2 
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl md:text-5xl font-bold text-white mb-8"
+              >
+                Austria Energie
+              </motion.h2>
+
+              {/* Eski h3 yerine AnimatedText bileşenini kullanalım */}
+              <div className="mb-8">
+                <AnimatedText text="Wir helfen Österreich" />
+              </div>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="text-lg md:text-xl text-white/80 leading-relaxed"
+              >
+                Ihr verlässlicher Partner auf dem Weg zu einer energieeffizienten und
+                nachhaltigen Zukunft in Österreich! Wir setzen uns leidenschaftlich
+                für eine umweltfreundliche Energieberatung ein, die nicht nur Ihre
+                Kosten senkt, sondern auch die Umwelt schützt.
+              </motion.p>
+
+              {/* Dekoratif elementler */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="absolute left-0 right-0 bottom-0 h-20 bg-white/5 transform -skew-y-3"
+              />
+              
+              {/* Opsiyonel: Yanlarda parlama efekti */}
+              <div className="absolute -left-20 top-1/2 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+              <div className="absolute -right-20 top-1/2 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+            </motion.div>
+          </div>
+        </section>
+
         <section id="themenbereiche" className="py-20 bg-gradient-to-br from-red-50 to-white">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Heizung */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="bg-red-600 rounded-xl p-8 text-white hover:shadow-xl transition-shadow"
+                className="group bg-red-600 rounded-xl p-8 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="mb-6">
+                <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
                   <Droplet className="w-12 h-12" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Heizung</h3>
                 <p className="mb-6">
-                  Die optimale Heizung trägt viel zur Energieoptimierung bei. Wir beraten Sie individuell und stellen Ihnen aktuelle Fördermöglichkeiten vor.
+                  Die optimale Heizung trägt viel zur Energieoptimierung bei. Wir beraten Sie individuell und stellen Ihnen aktuelle Frdermöglichkeiten vor.
                 </p>
                 <Link href="/heizung">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center"
+                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center group-hover:bg-red-50 transition-colors"
                   >
                     MEHR DAZU
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </Link>
               </motion.div>
 
+              {/* Photovoltaik */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-red-600 rounded-xl p-8 text-white hover:shadow-xl transition-shadow"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="group bg-red-600 rounded-xl p-8 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="mb-6">
+                <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
                   <Sun className="w-12 h-12" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Photovoltaik</h3>
@@ -494,48 +672,50 @@ export default function Home() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center"
+                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center group-hover:bg-red-50 transition-colors"
                   >
                     MEHR DAZU
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </Link>
-                </motion.div>
+              </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="bg-red-600 rounded-xl p-8 text-white hover:shadow-xl transition-shadow"
-                >
-                  <div className="mb-6">
-                    <HomeIcon className="w-12 h-12" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Sanierung</h3>
-                  <p className="mb-6">
-                    Energetische Sanierungen, barrierefreie Gestaltung und Modernisierungen lassen sich unter gewissen Umständen fördern. Wir beraten Sie.
-                  </p>
-                  <Link href="/sanierung">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center"
-                  >
-                    MEHR DAZU
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </motion.button>
-                </Link>
-                </motion.div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Sanierung */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="bg-red-600 rounded-xl p-8 text-white hover:shadow-xl transition-shadow"
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="group bg-red-600 rounded-xl p-8 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="mb-6">
+                <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                  <HomeIcon className="w-12 h-12" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Sanierung</h3>
+                <p className="mb-6">
+                  Energetische Sanierungen, barrierefreie Gestaltung und Modernisierungen lassen sich unter gewissen Umständen fördern. Wir beraten Sie.
+                </p>
+                <Link href="/sanierung">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center group-hover:bg-red-50 transition-colors"
+                  >
+                    MEHR DAZU
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </motion.button>
+                </Link>
+              </motion.div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Kostenoptimierung */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="group bg-red-600 rounded-xl p-8 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
                   <Zap className="w-12 h-12" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Kostenoptimierung</h3>
@@ -546,21 +726,22 @@ export default function Home() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center"
+                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center group-hover:bg-red-50 transition-colors"
                   >
                     MEHR DAZU
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </Link>
-                </motion.div>
+              </motion.div>
 
+              {/* Abwicklung */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="bg-red-600 rounded-xl p-8 text-white hover:shadow-xl transition-shadow"
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="group bg-red-600 rounded-xl p-8 text-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="mb-6">
+                <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
                   <HandshakeIcon className="w-12 h-12" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Abwicklung</h3>
@@ -571,13 +752,13 @@ export default function Home() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center"
+                    className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-flex items-center group-hover:bg-red-50 transition-colors"
                   >
                     MEHR DAZU
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
                 </Link>
-                </motion.div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -591,13 +772,25 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="md:w-1/2"
               >
-                <Image
-                  src="/Logo-AU-Energie__msi___png.webp"
-                  alt="Austria Energie Logo"
-                  width={400}
-                  height={400}
-                  className="object-contain"
-                />
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0] // Yukarı-aşağı hafif hareket
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <Image
+                    src="/Logo-AU-Energie__msi___png.webp"
+                    alt="Austria Energie Logo"
+                    width={400}
+                    height={400}
+                    className="object-contain drop-shadow-xl" // Gölge ekledim
+                  />
+                </motion.div>
               </motion.div>
 
               <motion.div

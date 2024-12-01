@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.lottie-player {
+  --lottie-player-primary-color: #DC2626;
+  --lottie-player-secondary-color: #EF4444;
+  --lottie-player-tertiary-color: #FCA5A5;
+}
