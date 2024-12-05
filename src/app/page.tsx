@@ -106,15 +106,10 @@ export default function Home() {
               <motion.div
                 whileHover={{ 
                   scale: 2.5,
-                  y: 40,
-                  zIndex: 50
+                  y: 40
                 }}
                 transition={{ duration: 0.3 }}
-                className="relative"
-                style={{ 
-                  transformOrigin: 'top left',
-                  position: 'absolute'
-                }}
+                className="absolute z-50 origin-top-left"
               >
                 <Image
                   src="/Logo-AU-Energie__msi___png.webp"
@@ -205,7 +200,7 @@ export default function Home() {
                   <span className="relative inline-block">
                     <span className="text-red-600">AUSTRIA</span>
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
                       animate={{
                         x: ['-100%', '100%'],
                       }}
@@ -215,10 +210,9 @@ export default function Home() {
                         repeatDelay: 8,
                         ease: "easeInOut"
                       }}
-                      style={{ 
-                        transform: 'skewX(-20deg)',
-                        opacity: 0.3,
-                        filter: 'blur(4px)'
+                      initial={{
+                        filter: 'blur(4px)',
+                        transform: 'skewX(-20deg)'
                       }}
                     />
                   </span>{' '}
@@ -503,8 +497,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
-                className="md:w-1/2"
-                style={{ zIndex: 2 }}
+                className="md:w-1/2 relative z-[2]"
               >
                 <motion.div 
                   className="bg-gradient-to-br from-white/30 to-red-50/20 backdrop-blur-sm rounded-2xl p-8 shadow-2xl"
