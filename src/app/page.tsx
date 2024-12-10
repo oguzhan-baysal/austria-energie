@@ -6,7 +6,6 @@ import { Menu, X, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon
 import Image from 'next/image'
 import Link from 'next/link'
 import { Player } from '@lottiefiles/react-lottie-player'
-import smartHomeAnimation from '../../public/animations/smart-home.json'
 import energieBeratungAnimation from '../../public/animations/energie_beratung.json'
 import begleitenAnimation from '../../public/animations/begleiten_service.json'
 
@@ -239,15 +238,15 @@ export default function Home() {
 
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
-                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
                 style={{ y: parallaxY }}
                 className="md:w-1/2 h-full flex items-center justify-center px-8"
               >
                 <motion.div 
-                  className="w-[80%] max-w-[500px]"
+                  className="w-[80%] max-w-[500px] relative"
                   animate={{ 
-                    y: [0, -10, 0] // Yukarı-aşağı hafif hareket
+                    y: [0, -10, 0]
                   }}
                   transition={{ 
                     duration: 3,
@@ -255,21 +254,31 @@ export default function Home() {
                     ease: "easeInOut"
                   }}
                 >
-                  <Player
-                    src={smartHomeAnimation}
-                    loop
-                    autoplay
-                    style={{ 
-                      width: '100%',
-                      height: '100%',
-                      filter: 'hue-rotate(345deg) saturate(130%) brightness(1.0) contrast(100%)'
-                    }}
-                    className="object-contain drop-shadow-xl" // Gölge ekledik
-                    rendererSettings={{
-                      preserveAspectRatio: 'xMidYMid meet',
-                      progressiveLoad: true
-                    }}
+                  <Image
+                    src="/smart-home.png"
+                    alt="Smart Home Illustration"
+                    width={500}
+                    height={500}
+                    quality={100}
+                    priority
+                    className="object-contain w-full h-full drop-shadow-xl mix-blend-multiply brightness-95"
                   />
+                  
+                  <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4">
+                    <Player
+                      autoplay
+                      loop
+                      src="/animations/temperature.json"
+                      className="lottie-player"
+                      style={{ width: '80px', height: '80px' }}
+                      rendererSettings={{
+                        preserveAspectRatio: 'xMidYMid slice',
+                        clearCanvas: true,
+                        progressiveLoad: true,
+                        hideOnTransparent: true,
+                      }}
+                    />
+                  </div>
                 </motion.div>
               </motion.div>
             </div>
