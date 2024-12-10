@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion'
-import { Menu, X, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon, Phone, Mail, User, Users, BookOpen } from 'lucide-react'
+import { Menu, X, Sun, Zap, Droplet, ArrowRight, Home as HomeIcon, HandshakeIcon, Phone, Mail, User, Users, BookOpen, Play } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Player } from '@lottiefiles/react-lottie-player'
@@ -38,6 +38,7 @@ const AnimatedText = ({ text }: { text: string }) => {
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isVideoOpen, setIsVideoOpen] = useState(false)
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -128,6 +129,13 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <motion.button
               className="text-gray-600 hover:text-red-600 transition-colors"
+              onClick={() => setIsVideoOpen(true)}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Play className="w-5 h-5" />
+            </motion.button>
+            <motion.button
+              className="text-gray-600 hover:text-red-600 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               whileTap={{ scale: 0.9 }}
             >
@@ -135,6 +143,35 @@ export default function Home() {
             </motion.button>
           </div>
         </div>
+
+        {isVideoOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-[80px] left-0 right-0 bg-gradient-to-br from-red-600 to-red-700 z-40 h-screen"
+          >
+            <div className="container mx-auto px-4 py-8 relative h-full">
+              <motion.button
+                className="absolute top-4 right-4 text-white hover:text-red-300 transition-colors z-50"
+                onClick={() => setIsVideoOpen(false)}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X className="w-8 h-8" />
+              </motion.button>
+              
+              <div className="w-full h-[calc(100vh-120px)] flex items-center justify-center">
+                <video
+                  src="/videohome.mp4"
+                  className="w-full max-w-6xl rounded-lg shadow-2xl"
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {isMenuOpen && (
           <motion.div
